@@ -22,6 +22,7 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 
 import org.apache.commons.vfs2.operations.FileOperations;
 
@@ -133,6 +134,8 @@ public interface FileObject extends Comparable<FileObject>, Iterable<FileObject>
      *             the file.
      */
     void copyFrom(FileObject srcFile, FileSelector selector) throws FileSystemException;
+
+    void copyFrom(FileObject srcFile, FileSelector selector, BooleanSupplier interruptCondition) throws FileSystemException;
 
     /**
      * Creates this file, if it does not exist. Also creates any ancestor folders which do not exist. This method does

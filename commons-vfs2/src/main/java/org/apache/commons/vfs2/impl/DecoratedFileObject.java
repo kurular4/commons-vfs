@@ -19,6 +19,7 @@ package org.apache.commons.vfs2.impl;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 
 import org.apache.commons.vfs2.FileContent;
 import org.apache.commons.vfs2.FileName;
@@ -59,6 +60,11 @@ public class DecoratedFileObject implements FileObject {
     @Override
     public void copyFrom(final FileObject srcFile, final FileSelector selector) throws FileSystemException {
         decoratedFileObject.copyFrom(srcFile, selector);
+    }
+
+    @Override
+    public void copyFrom(FileObject srcFile, FileSelector selector, BooleanSupplier interruptCondition) throws FileSystemException {
+        decoratedFileObject.copyFrom(srcFile, selector, interruptCondition);
     }
 
     @Override

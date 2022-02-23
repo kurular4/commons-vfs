@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BooleanSupplier;
 
 import org.apache.commons.vfs2.Capability;
 import org.apache.commons.vfs2.FileContent;
@@ -270,6 +271,11 @@ public abstract class AbstractFileObject<AFS extends AbstractFileSystem> impleme
      */
     @Override
     public void copyFrom(final FileObject file, final FileSelector selector) throws FileSystemException {
+        copyFrom(file, selector, () -> false);
+    }
+
+    @Override
+    public void copyFrom(FileObject file, FileSelector selector, BooleanSupplier interruptCondition) throws FileSystemException {
         if (!FileObjectUtils.exists(file)) {
             throw new FileSystemException("vfs.provider/copy-missing-file.error", file);
         }
@@ -280,6 +286,9 @@ public abstract class AbstractFileObject<AFS extends AbstractFileSystem> impleme
 
         // Copy everything across
         for (final FileObject srcFile : files) {
+            if (interruptCondition.getAsBoolean()) {
+                throw new FileSystemException("vfs.provider/interrupted.error");
+            }
             // Determine the destination file
             final String relPath = file.getName().getRelativeName(srcFile.getName());
             final FileObject destFile = resolveFile(relPath, NameScope.DESCENDENT_OR_SELF);
